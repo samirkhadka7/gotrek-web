@@ -2,11 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { login as loginApi, register as registerApi } from "@/lib/api/auth"
 
 interface User {
   id: string
   name: string
-  email: string
+  email?: string
+  role: "user" | "admin"
 }
 
 interface AuthContextType {
@@ -27,34 +29,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if user is logged in on mount
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser")
+    const token = localStorage.getItem("authToken")
     if (storedUser) {
       setUser(JSON.parse(storedUser))
+    }
+    if (!token) {
+      localStorage.removeItem("currentUser")
+      setUser(null)
     }
     setIsLoading(false)
   }, [])
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
-      // Get existing users from localStorage
-      const usersJson = localStorage.getItem("users")
-      const users = usersJson ? JSON.parse(usersJson) : []
-
-      // Check if user already exists
-      if (users.some((u: User & { password: string }) => u.email === email)) {
-        throw new Error("User with this email already exists")
+      const response = await registerApi({ name, email, password })
+      if (!response.success) {
+        throw new Error(response.message || "Signup failed")
       }
-
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        name,
-        email,
-        password, // In real app, this should be hashed
-      }
-
-      // Save to users array
-      users.push(newUser)
-      localStorage.setItem("users", JSON.stringify(users))
 
       return true
     } catch (error) {
@@ -65,28 +56,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Get users from localStorage
-      const usersJson = localStorage.getItem("users")
-      const users = usersJson ? JSON.parse(usersJson) : []
+      const response = await loginApi({ email, password })
 
-      // Find user
-      const foundUser = users.find(
-        (u: User & { password: string }) => u.email === email && u.password === password
-      )
-
-      if (!foundUser) {
-        throw new Error("Invalid email or password")
+      if (!response.success || !response.data?.token || !response.data?.user) {
+        throw new Error(response.message || "Login failed")
       }
 
-      // Set current user (without password)
-      const userWithoutPassword = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email,
-      }
-
-      setUser(userWithoutPassword)
-      localStorage.setItem("currentUser", JSON.stringify(userWithoutPassword))
+      const authenticatedUser = response.data.user
+      localStorage.setItem("authToken", response.data.token)
+      localStorage.setItem("currentUser", JSON.stringify(authenticatedUser))
+      setUser(authenticatedUser)
 
       return true
     } catch (error) {
@@ -98,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null)
     localStorage.removeItem("currentUser")
+    localStorage.removeItem("authToken")
     router.push("/")
   }
 

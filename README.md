@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Go Trek Web (Frontend + Backend)
 
-## Getting Started
+This repository is now organized as a monorepo with a separate backend folder.
 
-First, run the development server:
+## Structure
+
+- `backend/` → Express backend (route-controller-service-repository)
+- `app/`, `contexts/`, `lib/` → Next.js frontend
+
+## Backend Architecture (Auth)
+
+- Route: `backend/src/routes/auth.route.ts`
+- Controller: `backend/src/controllers/auth.controller.ts`
+- Service: `backend/src/services/auth.service.ts`
+- Repository: `backend/src/repositories/user.repository.ts`
+- DTO: `backend/src/dto/auth.dto.ts`
+- Model: `backend/src/models/user.model.ts`
+
+## User Model
+
+The `User` collection includes:
+
+- `name`
+- `email` (unique, sparse)
+- `identification` (unique, sparse)
+- `password` (hashed)
+- `role` with enum `user | admin`, default `user`
+
+## Run Frontend
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Frontend calls backend at `http://localhost:5050` by default (or `NEXT_PUBLIC_API_URL`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Run Backend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd backend
+npm install
+cp .env.example .env
+npm run dev
+```
 
-## Learn More
+## Backend Endpoints
 
-To learn more about Next.js, take a look at the following resources:
+- `POST /api/auth/register`
+- `POST /api/auth/login`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Base URL: `http://localhost:5050`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Postman Video Checklist (2-5 min)
 
-## Deploy on Vercel
+1. Successful registration
+2. Duplicate email or duplicate identification response
+3. DTO validation error response
+4. Successful login (returns JWT token)
+5. Invalid login response (wrong password or non-existent email)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## GitHub Submission
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Since this is a monorepo, create a branch like `sprint-1` and push:
+
+```bash
+git checkout -b sprint-1
+git add .
+git commit -m "Setup separate backend auth architecture"
+git push -u origin sprint-1
+```
