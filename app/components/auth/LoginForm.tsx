@@ -14,7 +14,7 @@ import { Toast } from "@/app/components/ui/Toast"
 // Zod Schema for Login Validation
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -105,7 +105,7 @@ export function LoginForm() {
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/signup"
             className="text-primary hover:text-primary/80 font-semibold transition"
