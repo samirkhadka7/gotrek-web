@@ -3,6 +3,9 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { login as loginApi, register as registerApi } from "@/lib/api/auth"
+import Cookies from "js-cookie"
+
+const COOKIE_OPTIONS = { expires: 7 } // matches backend JWT 7-day expiry
 
 interface User {
   id: string
@@ -26,15 +29,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-  // Check if user is logged in on mount
+  // Check if user is logged in on mount (restore from cookies)
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser")
-    const token = localStorage.getItem("authToken")
+    const storedUser = Cookies.get("currentUser")
+    const token = Cookies.get("authToken")
     if (storedUser) {
       setUser(JSON.parse(storedUser))
     }
     if (!token) {
-      localStorage.removeItem("currentUser")
+      Cookies.remove("currentUser")
       setUser(null)
     }
     setIsLoading(false)
@@ -63,8 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const authenticatedUser = response.data.user
-      localStorage.setItem("authToken", response.data.token)
-      localStorage.setItem("currentUser", JSON.stringify(authenticatedUser))
+      Cookies.set("authToken", response.data.token, COOKIE_OPTIONS)
+      Cookies.set("currentUser", JSON.stringify(authenticatedUser), COOKIE_OPTIONS)
       setUser(authenticatedUser)
 
       return true
@@ -76,8 +79,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem("currentUser")
-    localStorage.removeItem("authToken")
+    Cookies.remove("currentUser")
+    Cookies.remove("authToken")
     router.push("/")
   }
 
