@@ -1,35 +1,17 @@
-import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
-declare global {
-  var mongooseConnection: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
-  };
-}
+import mongoose from 'mongoose';
 
-const cached = global.mongooseConnection || {
-  conn: null,
-  promise: null,
+const CONNECTION_STRING = process.env.MONGODB_URI;
+
+const connectDB = async (): Promise<void> => {
+  try {
+    await mongoose.connect(CONNECTION_STRING!);
+    console.log('Mongodb connected');
+  } catch (err) {
+    console.log('Database Error', err);
+  }
 };
 
-global.mongooseConnection = cached;
-
-export const connectToDatabase = async () => {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  const mongoUri = process.env.MONGODB_URI;
-  if (!mongoUri) {
-    throw new Error("MONGODB_URI is not configured");
-  }
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(mongoUri, {
-      dbName: process.env.MONGODB_DB || "go_trek",
-    });
-  }
-
-  cached.conn = await cached.promise;
-  return cached.conn;
-};
+export default connectDB;
