@@ -1,130 +1,312 @@
-# Hike Hub - Web Development Backend
+# GoTrek Backend API
 
-Hike Hub is a comprehensive web application designed for hiking enthusiasts. It provides a platform for users to discover trails, join hiking groups, track their activities, and connect with other hikers. The backend is built with Node.js and Express, and it offers a robust REST API to support a client-facing application.
+Backend service for **GoTrek** built with Node.js, Express, TypeScript, MongoDB, and Socket.IO.
 
-## Features
+This backend powers:
+- user authentication (JWT + Google OAuth)
+- trail and group management
+- real-time group chat
+- checklist generation and step tracking
+- subscription + eSewa payment flow
+- AI chatbot for trekking guidance
+- admin analytics/activity and notifications
 
-* **User Authentication:** Secure user registration and login with JWT-based authentication.
-* **Google OAuth:** Users can also sign up or log in using their Google accounts.
-* **Trail Management:** Admins can create, read, update, and delete hiking trails. Users can view and search for trails with various filters.
-* **Group Management:** Users can create and manage hiking groups, and other users can request to join these groups.
-* **User Profile Management:** Users can view and update their profiles, including their hiking stats and profile picture.
-* **Admin Dashboard:** A comprehensive admin dashboard to manage users, trails, and groups.
-* **Payment Integration:** Supports payments through eSewa for subscriptions.
-* **AI Chatbot:** An intelligent chatbot powered by Google's Generative AI to assist users with their queries about trails and groups.
-* **Real-time Chat:** Real-time chat functionality within hiking groups using Socket.io.
-* **Checklist Generator:** A tool to generate hiking checklists based on experience, duration, and weather conditions.
-* **Analytics:** Provides analytics on user growth, revenue, and hiking activities.
+---
 
-## Technologies Used
+## Tech Stack
 
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB with Mongoose
-* **Authentication:** JSON Web Tokens (JWT), Passport.js for Google OAuth
-* **Real-time Communication:** Socket.IO
-* **File Uploads:** Multer
-* **AI:** Google Generative AI (Gemini)
-* **Testing:** Jest, Supertest
-* **Environment Variables:** dotenv
+- Node.js + Express 5
+- TypeScript
+- MongoDB + Mongoose
+- JWT + Passport Google OAuth2
+- Socket.IO
+- Multer (file uploads)
+- Nodemailer (OTP email)
+- Jest + Supertest
 
-## Getting Started
+---
 
-### Prerequisites
+## Project Structure
 
-* Node.js (v18 or higher recommended)
-* MongoDB
-* npm (or yarn)
-
-### Installation
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/amanch3/hike_hub_web_development_backend.git](https://github.com/amanch3/hike_hub_web_development_backend.git)
-    cd hike_hub_web_development_backend
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Set up environment variables:**
-    Create a `.env` file in the root directory and add the following variables:
-    ```
-    MONGODB_URI=<your_mongodb_connection_string>
-    SECRET=<your_jwt_secret>
-    PORT=5050
-    GOOGLE_CLIENT_ID=<your_google_client_id>
-    GOOGLE_CLIENT_SECRET=<your_google_client_secret>
-    API_URL=http://localhost:5050/api
-    FRONTEND_URL=http://localhost:5173
-    ESEWA_MERCHANT_CODE=<your_esewa_merchant_code>
-    ESEWA_SECRET_KEY=<your_esewa_secret_key>
-    GEMINI_API_KEY=<your_gemini_api_key>
-    ```
-
-### Running the Application
-
-* **Development mode:**
-    ```bash
-    npm run dev
-    ```
-    This will start the server with nodemon, which automatically restarts the server on file changes.
-
-* **Production mode:**
-    ```bash
-    npm start
-    ```
-
-* **Running tests:**
-    ```bash
-    npm test
-    ```
-
-## API Endpoints
-
-A brief overview of the available API endpoints:
-
-* `POST /api/auth/register`: Register a new user.
-* `POST /api/auth/login`: Log in an existing user.
-* `GET /api/trail`: Get a list of all trails.
-* `POST /api/trail/create`: Create a new trail (admin only).
-* `GET /api/group`: Get a list of all groups.
-* `POST /api/group/create`: Create a new group.
-* `GET /api/user`: Get a list of all users (admin only).
-* `POST /api/v1/chatbot/query`: Interact with the AI chatbot.
-
-For a detailed list of all endpoints, please refer to the `routers` directory.
-
-## Folder Structure
-hike_hub_web_development_backend/
-├── config/
-│   └── db.js               # Database connection
-├── controllers/
-│   ├── admin/              # Controllers for admin-specific actions
-│   ├── userManagement.js   # User registration and login
-│   ├── ...                 # Other controller files
-├── data/
-│   └── checklistData.js    # Data for the checklist generator
-├── middlewares/
-│   ├── auth.middleware.js  # Authentication and authorization
-│   ├── fileUpload.js       # File upload handling
-│   └── ...                 # Other middleware
-├── models/
-│   ├── user.model.js       # User schema
-│   ├── trail.model.js      # Trail schema
-│   ├── group.model.js      # Group schema
-│   └── ...                 # Other Mongoose models
-├── routers/
-│   ├── admin/              # Routers for admin-specific endpoints
-│   ├── auth.routers.js     # Authentication routes
-│   └── ...                 # Other route files
-├── test/
-│   └── ...                 # Test files
-├── uploads/                # Directory for uploaded files
-├── utils/
-│   └── ...                 # Utility functions
-├── .gitignore
-├── index.js                # Main application entry point
+```txt
+backend/
+├── src/
+│   ├── config/            # DB config
+│   ├── controllers/       # Route handlers
+│   │   └── admin/         # Admin-specific controllers
+│   ├── data/              # Static/supporting data
+│   ├── middlewares/       # Auth, subscriptions, uploads, etc.
+│   ├── models/            # Mongoose models
+│   ├── routers/           # API routes
+│   │   └── admin/         # Admin user routes
+│   ├── scripts/           # Utility scripts (create-admin)
+│   ├── types/             # Type definitions (socket, express user)
+│   ├── utils/             # OAuth, socket helpers, email helpers
+│   └── index.ts           # Main entry point
+├── uploads/               # Uploaded files (served statically)
+├── dist/                  # Build output
 ├── package.json
-└── README.md
+└── tsconfig.json
+```
+
+---
+
+## Environment Variables
+
+Create `.env` inside `backend/`:
+
+```env
+# Core
+PORT=5050
+MONGODB_URI=mongodb://127.0.0.1:27017/gotrek
+SECRET=your_jwt_secret
+
+# Frontend/Backend URLs
+API_URL=http://localhost:5050/api
+FRONTEND_URL=http://localhost:3000
+BASE_URL=http://localhost:3000
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# eSewa
+ESEWA_MERCHANT_CODE=EPAYTEST
+ESEWA_SECRET_KEY=your_esewa_secret
+
+# AI Chatbot (Gemini)
+GEMINI_API_KEY=your_gemini_api_key
+
+# Email (OTP)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+```
+
+---
+
+## Install & Run
+
+```bash
+cd backend
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Production
+
+```bash
+npm run start
+```
+
+### Tests
+
+```bash
+npm test
+```
+
+### Create Admin User
+
+```bash
+npm run create-admin -- user@example.com
+```
+
+---
+
+## Backend Features (Detailed)
+
+### 1) Authentication & Account Security
+- JWT-based login/register for normal users.
+- Google OAuth login flow using Passport.
+- Change password for logged-in users.
+- Forgot password with OTP email and reset password flow.
+- Role-based authorization (`admin`, `guide`, normal user).
+
+### 2) User Profile & Admin User Management
+- User can view/update own profile (`/api/user/me`).
+- User can update profile picture with file upload support.
+- User can deactivate own account.
+- Admin can create, list, view, update, delete users, and update user role.
+
+### 3) Trail Management (Trekking Core)
+- Public trail listing for browsing trekking options.
+- Protected trail detail endpoint for logged-in user context.
+- Admin CRUD for trails with multi-image upload.
+- User trail participation flow:
+	- join a trail with date
+	- mark joined trail complete
+	- cancel joined trail
+
+### 4) Group Management (Community Trekking)
+- Guide/Admin can create trekking groups with media.
+- Public group listing and detail endpoints.
+- Protected group update flow.
+- Admin-only group deletion.
+- Group join request workflow:
+	- request to join
+	- admin approve/deny
+	- view pending requests
+- Member can leave joined group.
+- Group photo upload support.
+
+### 5) Real-time Group Chat
+- Socket.IO based real-time chat.
+- User socket registration for online mapping.
+- Join/leave room per group.
+- Persist message to DB, then broadcast to group room.
+- HTTP endpoint to fetch group message history.
+
+### 6) Checklist & Trek Preparation
+- Generate trekking checklist from selected inputs.
+- Save checklist per user.
+- Get current user checklist.
+- Update checklist item status.
+
+### 7) Step Tracking
+- Save user step entries.
+- Calculate/fetch total steps for a user.
+
+### 8) Subscription & Payment (eSewa)
+- Initiate eSewa payment from selected plan/amount.
+- Verify payment callback and update payment status.
+- Update user subscription after successful verification.
+- Fetch personal payment history.
+- Admin fetch all transaction history.
+- User can cancel subscription.
+- Middleware auto-checks subscription expiry and downgrades expired plan to `Basic`.
+
+### 9) AI Chatbot (TrailMate)
+- Gemini-powered chatbot endpoint.
+- Access protected by subscription (`Pro`, `Premium`) or `admin`.
+- Combines static trekking guidance with live DB context (trails/groups).
+- Supports trekking recommendations, group discovery, and platform guidance.
+
+### 10) Notifications
+- Get notifications for current user.
+- Get unread notification count.
+- Mark single notification as read.
+- Mark all notifications as read.
+
+### 11) Admin Insights
+- Analytics endpoint for admin dashboard metrics.
+- Recent activity endpoint for admin monitoring.
+
+### 12) File Uploads & Static Serving
+- Multer middleware for image/file uploads.
+- Uploaded files served from `/uploads`.
+
+### 13) Testing & Developer Utility
+- Jest + Supertest test setup.
+- Script to promote existing user to admin (`create-admin`).
+
+---
+
+## API Route Overview
+
+Base URL: `http://localhost:5050`
+
+### Auth (`/api/auth`)
+- `POST /register`
+- `POST /login`
+- `POST /logi` (temporary alias)
+- `POST /change-password` (protected)
+- `POST /forgot-password`
+- `POST /reset-password`
+- `GET /google`
+- `GET /google/callback`
+
+### Users (`/api/user`)
+- `GET /me` (protected)
+- `PUT /me` (protected)
+- `PUT /me/picture` (protected)
+- `DELETE /me` (protected)
+- `POST /create` (admin)
+- `GET /` (admin)
+- `GET /:id` (admin)
+- `PUT /:id` (admin)
+- `DELETE /:id` (admin)
+- `PUT /role/:userToUpdateId` (admin)
+
+### Trails (`/api/trail`)
+- `GET /` (public)
+- `GET /:id` (protected)
+- `POST /create` (admin)
+- `PUT /:id` (admin)
+- `DELETE /:id` (admin)
+- `POST /:id/join-with-date` (protected)
+- `POST /joined/:joinedTrailId/complete` (protected)
+- `DELETE /joined/:joinedTrailId/cancel` (protected)
+
+### Groups (`/api/group`)
+- `POST /create` (guide/admin)
+- `GET /`
+- `GET /:id`
+- `PUT /:id` (protected)
+- `DELETE /:id` (admin)
+- `POST /:id/request-join` (protected)
+- `POST /:id/leave` (protected)
+- `POST /:id/photos` (protected)
+- `PATCH /:groupId/requests/:requestId/approve` (admin)
+- `PATCH /:groupId/requests/:requestId/deny` (admin)
+- `GET /requests/pending` (admin)
+
+### Messages (`/api/messages`)
+- `GET /:groupId` (protected)
+
+### Notifications (`/api/notifications`)
+- `GET /` (protected)
+- `GET /unread-count` (protected)
+- `PATCH /read-all` (protected)
+- `PATCH /:id/read` (protected)
+
+### Checklist (`/api/checklist`)
+- `GET /generate`
+- `POST /save` (protected)
+- `GET /my` (protected)
+- `PUT /item/:itemId` (protected)
+
+### Steps (`/api/step`)
+- `POST /` (protected)
+- `GET /total/:userId` (protected)
+
+### Payment & Subscription
+- `POST /api/payment/initiate` (protected)
+- `GET /api/payment/verify`
+- `GET /api/payment/history` (protected)
+- `GET /api/payment/all-history` (admin)
+- `PUT /api/subscription/cancel` (protected)
+
+### Admin Insights
+- `GET /api/analytics` (admin)
+- `GET /api/activity` (admin)
+
+### Chatbot (`/api/v1/chatbot`)
+- `POST /query` (protected, Pro/Premium/Admin)
+
+---
+
+## Real-time Chat (Socket.IO)
+
+Socket events used in server:
+- `register` (map userId to socket)
+- `joinGroup`
+- `leaveGroup`
+- `sendMessage` (persists message and emits `newMessage` to group room)
+
+---
+
+## Notes
+
+- Uploaded files are served via `/uploads`.
+- Subscription status middleware runs on `/api` routes and auto-downgrades expired plans to `Basic`.
+- Keep `node_modules` and generated build caches out of Git commits.
