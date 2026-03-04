@@ -654,3 +654,191 @@ describe('Trail filter by difficulty', () => {
     expect(res.body.data[0].name).toBe('Easy Walk');
   });
 });
+
+// =============================================
+// Additional Integration Scenarios
+// =============================================
+describe('Auth additional scenarios', () => {
+  it('43. should login successfully using /api/auth/logi alias', async () => {
+    await User.create({
+      name: 'Alias Login User',
+      email: 'aliaslogin@test.com',
+      password: 'password123',
+      phone: '1112223333',
+    });
+
+    const res = await request(app).post('/api/auth/logi').send({
+      email: 'aliaslogin@test.com',
+      password: 'password123',
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.token).toBeDefined();
+  });
+
+  it('44. should reject change password when fields are missing', async () => {
+    const { token } = await createUserAndToken();
+
+    const res = await request(app)
+      .post('/api/auth/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ currentPassword: 'password123' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toContain('provide both current and new password');
+  });
+
+  it('45. should reject registration with invalid email format', async () => {
+    const res = await request(app).post('/api/auth/register').send({
+      name: 'Bad Email',
+      email: 'not-an-email',
+      password: 'password123',
+      phone: '9999999999',
+    });
+
+    expect(res.status).toBe(500);
+    expect(res.body.success).toBe(false);
+  });
+});
+
+describe('Trail additional scenarios', () => {
+  it('46. should reject fetching single trail without token', async () => {
+    const trail = await createTrail();
+
+    const res = await request(app).get(`/api/trail/${trail._id}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toContain('no token provided');
+  });
+
+  it('47. should reject trail deletion without token', async () => {
+    const trail = await createTrail();
+
+    const res = await request(app).delete(`/api/trail/${trail._id}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('48. should reject joining trail without token', async () => {
+    const trail = await createTrail();
+
+    const res = await request(app)
+      .post(`/api/trail/${trail._id}/join-with-date`)
+      .send({ scheduledDate: '2026-08-15' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('49. should return 404 when joining non-existent trail', async () => {
+    const { token } = await createUserAndToken();
+    const fakeTrailId = new mongoose.Types.ObjectId();
+
+    const res = await request(app)
+      .post(`/api/trail/${fakeTrailId}/join-with-date`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ scheduledDate: '2026-08-15' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toContain('Trail not found');
+  });
+
+  it('50. should return empty results when trail search has no match', async () => {
+    await createTrail({ name: 'Ghorepani Trek' });
+
+    const res = await request(app).get('/api/trail?search=NoSuchTrailName');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveLength(0);
+    expect(res.body.pagination.total).toBe(0);
+  });
+});
+
+describe('User additional scenarios', () => {
+  it('51. should reject updating my profile without authentication', async () => {
+    const res = await request(app).put('/api/user/me').send({ name: 'No Auth' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('52. should reject deactivating my profile without authentication', async () => {
+    const res = await request(app).delete('/api/user/me');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('53. should allow admin to paginate users list', async () => {
+    const { token } = await createAdminAndToken();
+    await createUserAndToken({ email: 'page1@test.com' });
+    await createUserAndToken({ email: 'page2@test.com' });
+    await createUserAndToken({ email: 'page3@test.com' });
+
+    const res = await request(app)
+      .get('/api/user?page=2&limit=2')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveLength(2);
+    expect(res.body.pagination.page).toBe(2);
+    expect(res.body.pagination.limit).toBe(2);
+    expect(res.body.pagination.total).toBe(4);
+  });
+
+  it('54. should reject admin get user by id without token', async () => {
+    const { user } = await createUserAndToken({ email: 'notoken-target@test.com' });
+
+    const res = await request(app).get(`/api/user/${user._id}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('55. should reject non-admin user deletion by id', async () => {
+    const { token } = await createUserAndToken({ email: 'normal-user@test.com' });
+    const { user: targetUser } = await createUserAndToken({ email: 'target-delete2@test.com' });
+
+    const res = await request(app)
+      .delete(`/api/user/${targetUser._id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(403);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toContain('Not authorized as an admin');
+  });
+
+  it('56. should return 404 when admin updates a non-existent user', async () => {
+    const { token } = await createAdminAndToken();
+    const fakeUserId = new mongoose.Types.ObjectId();
+
+    const res = await request(app)
+      .put(`/api/user/${fakeUserId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Ghost User' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toContain('User not found');
+  });
+
+  it('57. should return 404 when admin updates role for non-existent user', async () => {
+    const { token } = await createAdminAndToken();
+    const fakeUserId = new mongoose.Types.ObjectId();
+
+    const res = await request(app)
+      .put(`/api/user/role/${fakeUserId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ newRoles: 'guide' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toContain('not found');
+  });
+});
