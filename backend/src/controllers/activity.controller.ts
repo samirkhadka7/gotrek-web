@@ -72,3 +72,4 @@ export const getRecentActivities = async (_req: Request, res: Response): Promise
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
+// TODO: paginate activity feed responses
