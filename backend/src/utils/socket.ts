@@ -40,3 +40,4 @@ export function emitToUser(userId: string, event: string, data: any) {
     });
   }
 }
+// TODO: implement heartbeat mechanism for stale connections
