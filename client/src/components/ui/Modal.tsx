@@ -35,3 +35,4 @@ export default function Modal({ isOpen, open: openProp, onClose, title, children
     </Dialog.Root>
   );
 }
+// TODO: trap focus inside modal for keyboard navigation
