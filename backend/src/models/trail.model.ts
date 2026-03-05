@@ -84,3 +84,4 @@ const trailSchema = new Schema<ITrailDocument>(
 );
 
 export default mongoose.model<ITrailDocument>('Trail', trailSchema);
+// TODO: add geospatial index for nearby trails query
