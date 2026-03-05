@@ -10,3 +10,4 @@ export default function ToastProvider() {
     error: { iconTheme: { primary: '#DC2626', secondary: '#fff' } },
   }} />;
 }
+// TODO: add auto-dismiss with configurable duration
