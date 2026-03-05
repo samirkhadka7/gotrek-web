@@ -213,3 +213,4 @@ export const sendWelcomeEmail = async (email: string, name: string): Promise<voi
     console.error('Error sending welcome email:', error);
   }
 };
+// TODO: add email template versioning
