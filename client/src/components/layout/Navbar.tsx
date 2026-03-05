@@ -172,3 +172,4 @@ export default function Navbar() {
     </header>
   );
 }
+// TODO: add aria-labels for accessibility
