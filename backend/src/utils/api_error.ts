@@ -26,3 +26,4 @@ class ApiError extends Error {
 }
 
 export default ApiError;
+// TODO: add structured error codes for client consumption
