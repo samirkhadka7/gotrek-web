@@ -173,3 +173,4 @@ UserSchema.methods.createPasswordResetOTP = function (): string {
 };
 
 export default mongoose.model<IUserDocument>('User', UserSchema);
+// TODO: add index on lastLoginAt for analytics queries
