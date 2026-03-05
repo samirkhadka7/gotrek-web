@@ -46,3 +46,4 @@ export default function TrailCard({ trail }: { trail: Trail }) {
     </Link>
   );
 }
+// TODO: lazy load trail images for performance
