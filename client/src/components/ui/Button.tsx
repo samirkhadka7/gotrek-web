@@ -49,3 +49,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 export default Button;
 export { buttonVariants };
+// NOTE: consider adding loading spinner variant
