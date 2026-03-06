@@ -31,3 +31,4 @@ export default function EmptyState({ title, description, icon, action }: EmptySt
     </div>
   );
 }
+// TODO: add custom illustration support
