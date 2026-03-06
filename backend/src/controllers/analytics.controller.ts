@@ -122,3 +122,4 @@ export const getAnalytics = async (_req: Request, res: Response): Promise<void> 
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
+// TODO: cache analytics queries with Redis
