@@ -73,3 +73,4 @@ export default function FileUpload({ onFilesSelected, onChange, accept = 'image/
     </div>
   );
 }
+// TODO: add drag and drop file upload support
