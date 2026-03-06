@@ -44,3 +44,4 @@ const userChecklistSchema = new Schema<IUserChecklistDocument>(
 );
 
 export default mongoose.model<IUserChecklistDocument>('UserChecklist', userChecklistSchema);
+// TODO: add completion percentage virtual field
