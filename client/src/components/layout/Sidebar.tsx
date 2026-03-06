@@ -159,3 +159,4 @@ export default function Sidebar() {
     </>
   );
 }
+// TODO: collapse sidebar on mobile by default
