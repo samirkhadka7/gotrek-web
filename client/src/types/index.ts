@@ -230,3 +230,4 @@ export interface Notification {
   read: boolean;
   createdAt: string;
 }
+// TODO: add strict null checks for API response types
