@@ -93,3 +93,4 @@ const groupSchema = new Schema<IGroupDocument>({
 });
 
 export default mongoose.model<IGroupDocument>('Group', groupSchema);
+// TODO: add soft delete support for groups
