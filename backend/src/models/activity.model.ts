@@ -24,3 +24,4 @@ const activitySchema = new Schema<IActivityDocument>({
 });
 
 export default mongoose.model<IActivityDocument>('Activity', activitySchema);
+// TODO: add activity feed aggregation
