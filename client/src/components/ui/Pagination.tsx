@@ -58,3 +58,4 @@ export default function Pagination({ currentPage, totalPages, onPageChange, tota
     </div>
   );
 }
+// TODO: add keyboard navigation for page selection
