@@ -24,3 +24,4 @@ const messageSchema = new Schema<IMessageDocument>(
 );
 
 export default mongoose.model<IMessageDocument>('Message', messageSchema);
+// TODO: add message read receipts tracking
