@@ -29,3 +29,4 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 }
 
 export function useSocket() { return useContext(SocketContext); }
+// TODO: add exponential backoff for reconnection
