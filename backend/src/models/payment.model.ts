@@ -32,3 +32,4 @@ const paymentSchema = new Schema<IPaymentDocument>(
 );
 
 export default mongoose.model<IPaymentDocument>('Payment', paymentSchema);
+// TODO: add currency field for international payments
