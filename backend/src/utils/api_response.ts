@@ -13,3 +13,4 @@ class ApiResponse {
 }
 
 export default ApiResponse;
+// TODO: add response compression middleware
