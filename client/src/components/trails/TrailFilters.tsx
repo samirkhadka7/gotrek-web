@@ -17,3 +17,4 @@ export default function TrailFilters({ difficulty, onDifficultyChange }: TrailFi
     </div>
   );
 }
+// TODO: persist filter state in URL query params
