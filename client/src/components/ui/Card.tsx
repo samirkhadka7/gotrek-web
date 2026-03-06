@@ -27,3 +27,4 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 Card.displayName = 'Card';
 export default Card;
 export { Card };
+// TODO: add skeleton loading state variant
