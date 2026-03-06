@@ -65,3 +65,4 @@ const checklistSchema = new Schema<IChecklistDocument>(
 );
 
 export default mongoose.model<IChecklistDocument>('Checklist', checklistSchema);
+// TODO: add checklist category grouping
