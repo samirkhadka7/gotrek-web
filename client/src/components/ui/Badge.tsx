@@ -35,3 +35,4 @@ export default function Badge({ children, className, variant = 'default', size =
     </span>
   );
 }
+// TODO: add pulsing animation for live status badges
