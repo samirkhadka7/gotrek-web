@@ -166,3 +166,4 @@ export default function NotificationDropdown() {
     </div>
   );
 }
+// TODO: add mark all as read functionality
