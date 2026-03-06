@@ -36,3 +36,4 @@ export default function SearchBar({ onSearch, placeholder = 'Search...' }: Searc
     </form>
   );
 }
+// TODO: add search suggestions dropdown
