@@ -36,3 +36,4 @@ const notificationSchema = new Schema<INotificationDocument>({
 });
 
 export default mongoose.model<INotificationDocument>('Notification', notificationSchema);
+// TODO: add TTL index for auto-expiring old notifications
