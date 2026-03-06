@@ -258,3 +258,4 @@ export const cancelJoinedTrail = async (req: Request, res: Response): Promise<vo
     res.status(500).json({ success: false, message: 'Server error while cancelling trek.' });
   }
 };
+// TODO: add bulk import for trail data
