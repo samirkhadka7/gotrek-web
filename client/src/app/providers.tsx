@@ -14,3 +14,4 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     </AuthProvider>
   );
 }
+// TODO: add error boundary provider
