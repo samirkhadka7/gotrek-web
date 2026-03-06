@@ -18,3 +18,4 @@ export const getMessageForGroup = async (req: Request, res: Response): Promise<v
     });
   }
 };
+// TODO: add message search functionality
