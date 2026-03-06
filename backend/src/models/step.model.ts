@@ -21,3 +21,4 @@ const stepSchema = new Schema<IStepDocument>({
 });
 
 export default mongoose.model<IStepDocument>('Step', stepSchema);
+// TODO: add step difficulty rating field
