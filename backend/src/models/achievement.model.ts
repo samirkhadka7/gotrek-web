@@ -53,3 +53,4 @@ const achievementSchema = new Schema<IAchievementDocument>({
 });
 
 export default mongoose.model<IAchievementDocument>('Achievement', achievementSchema);
+// TODO: add achievement unlock notification trigger
