@@ -50,3 +50,4 @@ export const getTotalStepsForUser = async (req: Request, res: Response): Promise
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+// TODO: validate step ordering on bulk updates
