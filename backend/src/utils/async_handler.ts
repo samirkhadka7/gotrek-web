@@ -13,3 +13,4 @@ const asyncHandler = (requestHandler: AsyncRequestHandler) => {
 };
 
 export { asyncHandler };
+// TODO: add request timeout wrapper
