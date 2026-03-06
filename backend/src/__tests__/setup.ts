@@ -24,3 +24,4 @@ afterEach(async () => {
 
 process.env.SECRET = 'test-secret-key-for-jwt';
 process.env.FRONTEND_URL = 'http://localhost:3000';
+// TODO: add test database cleanup between suites
