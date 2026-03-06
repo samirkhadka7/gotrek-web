@@ -88,3 +88,4 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
     </>
   );
 }
+// TODO: add lightbox view for photo gallery
