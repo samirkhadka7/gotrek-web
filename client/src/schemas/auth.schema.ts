@@ -11,3 +11,4 @@ export const registerSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
   phone: z.string().optional(),
 });
+// TODO: add password strength validation rules
