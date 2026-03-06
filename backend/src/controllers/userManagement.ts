@@ -284,3 +284,4 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     });
   }
 };
+// TODO: add user profile completeness score
