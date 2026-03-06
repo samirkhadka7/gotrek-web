@@ -26,3 +26,4 @@ const cancellationSchema = new Schema<ICancellationDocument>(
 );
 
 export default mongoose.model<ICancellationDocument>('Cancellation', cancellationSchema);
+// TODO: add cancellation reason analytics
