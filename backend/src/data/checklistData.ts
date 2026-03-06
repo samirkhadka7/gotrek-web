@@ -99,3 +99,4 @@ const checklistData: ChecklistData = {
 };
 
 export default checklistData;
+// TODO: externalize checklist data to config file
