@@ -38,3 +38,4 @@ export default function Select({ label, error, options, value, onChange, classNa
     </div>
   );
 }
+// TODO: add virtualized dropdown for large option lists
