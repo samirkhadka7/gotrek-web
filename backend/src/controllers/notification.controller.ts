@@ -69,3 +69,4 @@ export const markAllAsRead = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+// TODO: batch notification delivery for performance
