@@ -245,3 +245,4 @@ const handleChatQuery = async (req: Request, res: Response): Promise<void> => {
 };
 
 export default handleChatQuery;
+// TODO: rate limit chatbot API calls per user
