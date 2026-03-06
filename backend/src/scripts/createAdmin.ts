@@ -32,3 +32,4 @@ const createAdmin = async () => {
 };
 
 createAdmin();
+// TODO: add role-based seed data generation
